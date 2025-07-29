@@ -14,7 +14,7 @@ const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
     const importFnModule = async (surveyName) => {
       try {
         const fnModule = await import(
-          `https://gyde365qualifysurveyimg.blob.core.windows.net/userfunctions/${surveyName
+          `${import.meta.env.VITE_AZURE_BLOB_URL}/${surveyName
             .replace(/ /g, "_")
             .toLowerCase()}/index.js`
         );

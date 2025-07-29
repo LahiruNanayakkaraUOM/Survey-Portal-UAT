@@ -13,7 +13,9 @@ const Home = () => {
     const getSchema = async () => {
       try {
         const response = await fetch(
-          `https://qualify-fapp-surveyjs-djduaueze5grfec5.uksouth-01.azurewebsites.net/api/RetriveSurveyJsonFromDataverse?code=<API_CODE>&id=${id}`
+          `${import.meta.env.VITE_AZURE_SURVEYJSON_FUNCTION_URL}?code=${
+            import.meta.env.VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE
+          }&id=${id}`
         );
         if (response.ok) {
           const data = await response.json();
