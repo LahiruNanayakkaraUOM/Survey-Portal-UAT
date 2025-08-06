@@ -34,9 +34,9 @@ jobs:
           ###### End of Repository/Build Configurations ######
     env:
       # Set the environment variable
-      VITE_AZURE_BLOB_URL: "https://gyde365qualifysurveyimg.blob.core.windows.net/userfunctions"
-      VITE_AZURE_SURVEYJSON_FUNCTION_URL: "https://qualify-fapp-surveyjs-djduaueze5grfec5.uksouth-01.azurewebsites.net/api/RetriveSurveyJsonFromDataverse"
-      VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE: ${{ secrets.VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE}}
+      VITE_AZURE_BLOB_URL: ${{ vars.VITE_AZURE_BLOB_URL }}
+      VITE_AZURE_SURVEYJSON_FUNCTION_URL: ${{ vars.VITE_AZURE_SURVEYJSON_FUNCTION_URL }}
+      VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE: ${{ secrets.VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
