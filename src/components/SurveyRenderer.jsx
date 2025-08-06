@@ -6,8 +6,11 @@ import { Survey } from "survey-react-ui";
 import "survey-core/survey-core.css";
 
 const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
-  const survey = new Model(schema);
+  const model = schema ? JSON.parse(schema) : {};
+  const survey = new Model(model);
+  const showTitle = survey.showTitle;
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [fnModule, setFnModule] = useState(null);
 
   useEffect(() => {
@@ -25,19 +28,27 @@ const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.warn("Function not found for:", surveyName);
+        setError(`Error loading module: ${error.message}`);
+        setLoading(false);
+        console.warn("Function module not found for:", surveyName);
       }
     };
     importFnModule(surveyName);
   }, []);
 
-  useEffect(() => {
-    if (fnModule) {
-      survey.onComplete.add(async (sender, options) => {
-        await fnModule.saveSurveyResults(survey, sender, options, originURL);
-      });
-    }
-  }, [fnModule]);
+  useEffect(() => {}, [fnModule]);
+
+  if (survey) {
+    survey.onCurrentPageChanged.add((sender, options) => {
+      console.log("Current page no:", options.newCurrentPage.num);
+    });
+  }
+
+  if (fnModule) {
+    survey.onComplete.add(async (sender, options) => {
+      await fnModule.saveSurveyResults(survey, sender, options, originURL);
+    });
+  }
 
   if (loading) {
     survey.beginLoading();
@@ -45,9 +56,9 @@ const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
     survey.logo = "";
   } else {
     survey.endLoading();
-    survey.showTitle = true;
+    survey.showTitle = showTitle;
   }
-  return <Survey model={survey} />;
+  return !error ? <Survey model={survey} /> : <div>Error: {error}</div>;
 };
 
 export default SurveyRenderer;
