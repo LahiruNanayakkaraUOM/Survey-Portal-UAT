@@ -5,7 +5,7 @@ import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import "survey-core/survey-core.css";
 
-const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
+const SurveyRenderer = ({ schema, originURL, surveySlogan }) => {
   const model = schema ? JSON.parse(schema) : {};
   const survey = new Model(model);
   const showTitle = survey.showTitle;
@@ -14,15 +14,13 @@ const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
   const [fnModule, setFnModule] = useState(null);
 
   useEffect(() => {
-    const importFnModule = async (surveyName) => {
+    const importFnModule = async (surveySlogan) => {
       try {
         const fnModule = await import(
-          `${import.meta.env.VITE_AZURE_BLOB_URL}/${surveyName
-            .replace(/ /g, "_")
-            .toLowerCase()}/index.js`
+          `${import.meta.env.VITE_AZURE_BLOB_URL}/${surveySlogan}/index.js`
         );
         if (fnModule) {
-          await fnModule.fetchFontStyles(surveyId);
+          await fnModule.fetchFontStyles(surveySlogan);
           await fnModule.fetchDefaultStyle(originURL);
           setFnModule(fnModule);
           setLoading(false);
@@ -30,10 +28,10 @@ const SurveyRenderer = ({ schema, originURL, surveyName, surveyId }) => {
       } catch (error) {
         setError(`Error loading module: ${error.message}`);
         setLoading(false);
-        console.warn("Function module not found for:", surveyName);
+        console.warn("Function module not found for:", surveySlogan);
       }
     };
-    importFnModule(surveyName);
+    importFnModule(surveySlogan);
   }, []);
 
   useEffect(() => {}, [fnModule]);

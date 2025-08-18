@@ -5,7 +5,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/survey/:id" element={<Home />} />
+        <Route path="/survey/:slogan" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

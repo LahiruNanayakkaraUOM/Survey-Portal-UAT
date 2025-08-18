@@ -5,9 +5,8 @@ import SurveyRenderer from "./SurveyRenderer";
 const Home = () => {
   const [surveyJson, setSurveyJson] = useState({});
   const [originUrl, setOriginUrl] = useState("");
-  const [surveyName, setSurveyName] = useState("");
   const [loading, setLoading] = useState(true);
-  const { id } = useParams();
+  const { slogan } = useParams();
 
   useEffect(() => {
     const getSchema = async () => {
@@ -15,7 +14,7 @@ const Home = () => {
         const response = await fetch(
           `${import.meta.env.VITE_AZURE_SURVEYJSON_FUNCTION_URL}?code=${
             import.meta.env.VITE_AZURE_SURVEYJSON_FUNCTION_API_CODE
-          }&id=${id}`
+          }&slogan=${slogan}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -24,7 +23,6 @@ const Home = () => {
           console.log(schema);
           setSurveyJson(schema);
           setOriginUrl(data?.originUrl);
-          setSurveyName(data?.name);
         }
         setLoading(false);
       } catch (error) {
@@ -38,12 +36,11 @@ const Home = () => {
     <>
       {loading ? (
         <p></p>
-      ) : surveyJson && originUrl && surveyName ? (
+      ) : surveyJson && originUrl ? (
         <SurveyRenderer
           schema={surveyJson}
           originURL={originUrl}
-          surveyName={surveyName}
-          surveyId={id}
+          surveySlogan={slogan}
         />
       ) : (
         <p>Something went wrong</p>
